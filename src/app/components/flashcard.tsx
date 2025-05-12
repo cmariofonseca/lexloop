@@ -1,7 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
-import { useCardsStore } from "@/app/lib/useCardsStore";
 import { Trash2 } from "lucide-react";
+
+import { useCardsStore } from "@/app/libs/useCardsStore";
 
 type Props = {
   readonly id: string;
