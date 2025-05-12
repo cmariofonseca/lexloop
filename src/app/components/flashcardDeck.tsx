@@ -1,8 +1,10 @@
 "use client";
-import { useCardsStore } from "@/app/lib/useCardsStore";
-import Flashcard from "./flashcard";
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+
+import { useCardsStore } from "@/app/libs/useCardsStore";
+
+import Flashcard from "./flashcard";
 
 export default function FlashcardDeck() {
   const { cards, setInitialCards } = useCardsStore();
