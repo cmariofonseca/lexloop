@@ -1,9 +1,5 @@
-import FlashcardDeck from "./components/flashcardDeck";
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <main className="bg-slate-100 w-full h-screen">
-      <FlashcardDeck />
-    </main>
-  );
+  redirect('/cards');
 }
