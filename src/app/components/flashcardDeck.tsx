@@ -27,7 +27,7 @@ export default function FlashcardDeck() {
   }
 
   return (
-    <div className="w-full h-screen overflow-hidden flex justify-center items-center">
+    <div className="w-full h-full overflow-hidden flex justify-center items-center">
       <AnimatePresence mode="wait">
         <motion.div
           key={cards[index].id}
