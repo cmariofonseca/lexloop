@@ -24,7 +24,7 @@ export default function AddCardForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-sm mx-auto p-4">
+    <form onSubmit={handleSubmit} className="relative bg-white max-w-sm w-full h-full p-6 rounded-2xl shadow-lg flex flex-col justify-center items-center">
       <input
         type="text"
         placeholder="English word"
