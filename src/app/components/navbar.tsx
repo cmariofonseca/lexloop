@@ -7,26 +7,26 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="w-full bg-white border-b shadow-sm z-10 flex justify-around items-center h-full">
+    <nav className="w-full h-full bg-white border border-gray-200 rounded-lg shadow-sm z-10 flex justify-around items-center">
       <Link
-        href="/pages/cards"
         className={pathname === "/pages/cards" ? "text-blue-600" : "text-gray-400"}
+        href="/pages/cards"
       >
         <Square size={24} />
       </Link>
 
       <Link
-        href="/pages/add"
         className={pathname === "/pages/add" ? "text-blue-600" : "text-gray-400"}
+        href="/pages/add"
       >
         <PlusSquare size={24} />
       </Link>
 
       <Link
-        href="/pages/cards"
         className={pathname === "/pages/cards" ? "text-blue-600" : "text-gray-400"}
+        href="/pages/cards"
       >
-        <small>v:1.10.1</small>
+        <small className="text-slate-300">v:1.11.0</small>
       </Link>
     </nav>
   );

@@ -1,12 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 
 import { auth } from "@/app/libs/firebase";
+import { FirebaseUser } from "@/types/firebase";
 
 export default function SignInForm() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -27,8 +31,10 @@ export default function SignInForm() {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      console.log("Logged in:", user.email);
+      const user: FirebaseUser = userCredential.user;
+
+      localStorage.setItem("lexloop_user", JSON.stringify(user));
+      router.push("/pages/cards");
     } catch (err) {
       const error = err as FirebaseError;
       setError(error.message);
@@ -48,11 +54,11 @@ export default function SignInForm() {
           <input
             className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             id="email"
-            type="email"
-            placeholder="name@mail.com"
-            value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="name@mail.com"
             required
+            type="email"
+            value={email}
           />
           {!isEmailValid && email && (
             <p className="text-red-600 text-sm mt-1">Invalid email format</p>
@@ -67,12 +73,12 @@ export default function SignInForm() {
           <input
             className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             id="password"
-            type="password"
-            placeholder="Password (6+ characters)"
             minLength={6}
-            value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password (6+ characters)"
             required
+            type="password"
+            value={password}
           />
         </div>
 
@@ -80,10 +86,10 @@ export default function SignInForm() {
 
         {/* Submit Button */}
         <button
-          type="submit"
-          disabled={!isFormComplete || loading}
           className={`w-full mt-2 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center 
             ${isFormComplete ? "bg-blue-700 hover:bg-blue-800" : "bg-gray-300 cursor-not-allowed"}`}
+          disabled={!isFormComplete || loading}
+          type="submit"
         >
           {loading ? "Logging in..." : "Login"}
         </button>
