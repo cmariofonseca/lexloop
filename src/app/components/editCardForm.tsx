@@ -1,62 +1,79 @@
 "use client";
-import { useState } from "react";
-import { db } from "@/app/libs/firebase";
-import { collection, addDoc } from "firebase/firestore";
 
-import { useCardsStore } from "@/app/libs/useCardsStore";
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+
+import { db } from "@/app/libs/firebase";
 
 import Loader from "@/app/components/loader";
 
-import { FirebaseUser } from "@/types/firebase";
-import { Card } from "@/types/ card";
+export default function EditCardPage() {
+  const router = useRouter();
+  const { id } = useParams();
 
-export default function AddCardForm() {
   const [english, setEnglish] = useState("");
   const [pronunciation, setPronunciation] = useState("");
   const [spanish, setSpanish] = useState("");
   const [loading, setLoading] = useState(false);
-  const { cards, setInitialCards } = useCardsStore();
+  const [error, setError] = useState("");
 
-  const storedUser =
-    typeof window !== "undefined"
-      ? (JSON.parse(localStorage.getItem("lexloop_user") ?? "null") as FirebaseUser)
-      : null;
-  const userId = storedUser?.uid;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  useEffect(() => {
     setLoading(true);
 
-    if (!english.trim() || !pronunciation.trim() || !spanish.trim() || !userId) return;
+    const fetchCard = async () => {
+      if (!id || typeof id !== "string") return;
 
-    const newCard: Card = {
-      createdAt: new Date(),
-      english: english.trim(),
-      id: "",
-      pronunciation: pronunciation.trim(),
-      spanish: spanish.trim(),
-      userId,
+      try {
+        const ref = doc(db, "cards", id);
+        const snapshot = await getDoc(ref);
+
+        if (!snapshot.exists()) {
+          setError("Card not found");
+          return;
+        }
+
+        const data = snapshot.data();
+        setEnglish(data.english ?? "");
+        setPronunciation(data.pronunciation ?? "");
+        setSpanish(data.spanish ?? "");
+      } catch (err) {
+        console.error("Error loading card:", err);
+        setError("Error loading card.");
+      } finally {
+        setLoading(false);
+      }
     };
 
+    fetchCard();
+  }, [id]);
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!english.trim() || !pronunciation.trim() || !spanish.trim()) return;
+
     try {
-      await addDoc(collection(db, "cards"), newCard);
-      setInitialCards([...cards, newCard]);
-      setEnglish("");
-      setPronunciation("");
-      setSpanish("");
+      const ref = doc(db, "cards", id as string);
+      await updateDoc(ref, {
+        english: english.trim(),
+        pronunciation: pronunciation.trim(),
+        spanish: spanish.trim(),
+      });
+
+      router.push("/pages/cards");
     } catch (err) {
-      console.error("Error saving card to Firestore:", err);
-    } finally {
-      setLoading(false);
+      console.error("Error updating card:", err);
+      setError("Could not update card.");
     }
   };
 
+  if (loading) return <p className="text-center mt-10">Loading card...</p>;
   if (loading) return <Loader />;
+  if (error) return <p className="text-center mt-10 text-red-600">{error}</p>;
 
   return (
     <div className="w-full max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-      <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
+      <form className="max-w-sm mx-auto" onSubmit={handleUpdate}>
         <div className="mb-4">
           <label className="block mb-2 text-sm font-medium text-gray-900" htmlFor="english">
             English word
@@ -88,7 +105,7 @@ export default function AddCardForm() {
         </div>
 
         <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium text-gray-900" htmlFor="spanish">
+          <label className="block text-sm mb-1 font-medium text-gray-900" htmlFor="spanish">
             Spanish translation
           </label>
           <input
@@ -102,11 +119,13 @@ export default function AddCardForm() {
           />
         </div>
 
+        {error && <p className="text-red-600 text-sm">{error}</p>}
+
         <button
-          className="w-full bg-blue-700 hover:bg-blue-800 text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none mt-4"
+          className="w-full bg-blue-700 hover:bg-blue-800 text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none"
           type="submit"
         >
-          Add flashcard
+          Edit flashcard
         </button>
       </form>
     </div>

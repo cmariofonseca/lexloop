@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 
 import { auth } from "@/app/libs/firebase";
 
 export default function SignUpForm() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
@@ -34,12 +37,11 @@ export default function SignUpForm() {
     setLoading(true);
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      setSuccess(`User created: ${user.email}`);
+      await createUserWithEmailAndPassword(auth, email, password);
       setEmail("");
       setPassword("");
       setRepeatPassword("");
+      router.push("/pages/cards");
     } catch (err) {
       const error = err as FirebaseError;
       setError(error.message);
@@ -59,11 +61,11 @@ export default function SignUpForm() {
           <input
             className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             id="email"
-            type="email"
-            placeholder="name@mail.com"
-            value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="name@mail.com"
             required
+            type="email"
+            value={email}
           />
           {!isEmailValid && email && (
             <p className="text-red-600 text-sm mt-1">Invalid email format</p>
@@ -78,12 +80,12 @@ export default function SignUpForm() {
           <input
             className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             id="password"
-            type="password"
-            placeholder="Password (6+ characters)"
             minLength={6}
-            value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password (6+ characters)"
             required
+            type="password"
+            value={password}
           />
         </div>
 
@@ -95,12 +97,12 @@ export default function SignUpForm() {
           <input
             className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             id="repeat-password"
-            type="password"
-            placeholder="Repeat your password"
             minLength={6}
-            value={repeatPassword}
             onChange={(e) => setRepeatPassword(e.target.value)}
+            placeholder="Repeat your password"
             required
+            type="password"
+            value={repeatPassword}
           />
         </div>
 
@@ -113,12 +115,12 @@ export default function SignUpForm() {
 
         {/* Submit Button */}
         <button
-          type="submit"
-          disabled={!isFormComplete || loading}
           className={`w-full mt-2 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center 
             ${
               isFormComplete ? "bg-green-700 hover:bg-green-800" : "bg-gray-300 cursor-not-allowed"
             }`}
+          disabled={!isFormComplete || loading}
+          type="submit"
         >
           {loading ? "Creating user..." : "Create Account"}
         </button>

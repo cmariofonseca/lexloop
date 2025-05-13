@@ -1,10 +1,10 @@
-import { ThemeModeScript } from 'flowbite-react';
+import { ThemeModeScript } from "flowbite-react";
 
-import Navbar from './components/navbar';
+import Navbar from "./components/navbar";
 
-import './globals.css';
+import "./globals.css";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { readonly children: React.ReactNode }) {
   return (
     <html suppressHydrationWarning lang="en">
       <head>
@@ -12,12 +12,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className="flex flex-col h-[100dvh] w-screen overflow-hidden">
-        <div className="h-[6%]">
+        <div className="h-[6%] p-1">
           <Navbar />
         </div>
-        <div className="h-[94%] overflow-hidden">
-          {children}
-        </div>
+        <div className="h-[94%] overflow-hidden px-4">{children}</div>
       </body>
     </html>
   );
