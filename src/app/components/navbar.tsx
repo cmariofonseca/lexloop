@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PlusSquare, Square } from "lucide-react";
+import { PlusSquare, SquareChartGantt } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -12,7 +12,7 @@ export default function Navbar() {
         className={pathname === "/pages/cards" ? "text-blue-600" : "text-gray-400"}
         href="/pages/cards"
       >
-        <Square size={24} />
+        <SquareChartGantt size={24} />
       </Link>
 
       <Link
