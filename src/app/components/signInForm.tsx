@@ -9,10 +9,16 @@ import { auth } from "@/app/libs/firebase";
 export default function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const isValidEmail = (email: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isEmailValid = isValidEmail(email);
+  const isPasswordValid = password.length >= 6;
+  const isFormComplete = isEmailValid && isPasswordValid;
+
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) return;
 
@@ -25,7 +31,6 @@ export default function SignInForm() {
       console.log("Logged in:", user.email);
     } catch (err) {
       const error = err as FirebaseError;
-      console.error(error);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -33,35 +38,56 @@ export default function SignInForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="relative bg-white max-w-sm w-full h-full p-6 rounded-2xl shadow-lg flex flex-col justify-center items-center"
-    >
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full mb-2 p-2 border rounded"
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full mb-2 p-2 border rounded"
-        required
-      />
-      {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
+    <div className="w-full max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+      <form className="max-w-sm mx-auto" onSubmit={handleSignIn}>
+        {/* Email */}
+        <div className="mb-4">
+          <label className="block mb-2 text-sm font-medium text-gray-900" htmlFor="email">
+            Your email
+          </label>
+          <input
+            className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            id="email"
+            type="email"
+            placeholder="name@mail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          {!isEmailValid && email && (
+            <p className="text-red-600 text-sm mt-1">Invalid email format</p>
+          )}
+        </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-      >
-        {loading ? "Logging in..." : "Login"}
-      </button>
-    </form>
+        {/* Password */}
+        <div className="mb-4">
+          <label className="block mb-2 text-sm font-medium text-gray-900" htmlFor="password">
+            Your password
+          </label>
+          <input
+            className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            id="password"
+            type="password"
+            placeholder="Password (6+ characters)"
+            minLength={6}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={!isFormComplete || loading}
+          className={`w-full mt-2 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center 
+            ${isFormComplete ? "bg-blue-700 hover:bg-blue-800" : "bg-gray-300 cursor-not-allowed"}`}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
+    </div>
   );
 }
