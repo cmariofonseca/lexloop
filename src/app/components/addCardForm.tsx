@@ -1,7 +1,8 @@
 'use client';
 import { useState } from 'react';
-import { useCardsStore } from '@/app/lib/useCardsStore';
 import { v4 as uuidv4 } from 'uuid';
+
+import { useCardsStore } from '@/app/libs/useCardsStore';
 
 export default function AddCardForm() {
   const [english, setEnglish] = useState('');
