@@ -26,7 +26,7 @@ export default function Navbar() {
         href="/pages/cards"
         className={pathname === "/pages/cards" ? "text-blue-600" : "text-gray-400"}
       >
-        <small>v:1.10.0</small>
+        <small>v:1.10.1</small>
       </Link>
     </nav>
   );
