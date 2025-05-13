@@ -1,6 +1,6 @@
 export interface FirebaseUser {
   accessToken?: string;
-  auth?: any;
+  auth?: unknown;
   displayName: string | null;
   email: string | null;
   emailVerified: boolean;
@@ -13,11 +13,11 @@ export interface FirebaseUser {
   };
   phoneNumber: string | null;
   photoURL: string | null;
-  proactiveRefresh?: any;
-  providerData: any[];
+  proactiveRefresh?: unknown;
+  providerData: unknown[];
   providerId: string;
-  reloadListener?: any;
-  reloadUserInfo?: any;
+  reloadListener?: unknown;
+  reloadUserInfo?: unknown;
   stsTokenManager?: {
     refreshToken: string;
     accessToken: string;
