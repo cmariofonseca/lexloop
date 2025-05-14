@@ -8,14 +8,23 @@ import { Store } from "@/types/store";
 export const useCardsStore = create<Store>()(
   persist(
     (set, get) => ({
+      activeCardId: null,
       cards: [],
+      removeCard: (id) =>
+        set((state) => ({
+          cards: state.cards.filter((card) => card.id !== id),
+          activeCardId: null,
+        })),
+      setActiveCardId: (id) => set({ activeCardId: id }),
       setInitialCards: (initial) => {
         set({ cards: initial });
+        if (initial.length > 0) {
+          set({ activeCardId: initial[0].id }); // establecer el primero como activo por defecto
+        }
       },
-      removeCard: (id) => set({ cards: get().cards.filter((card) => card.id !== id) }),
     }),
     {
-      name: "lexloop-cards", // clave en localStorage
+      name: "lexloop-cards",
       storage: createJSONStorage(() => localStorage),
     }
   )
