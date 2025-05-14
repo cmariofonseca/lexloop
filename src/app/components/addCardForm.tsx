@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import { db } from "@/app/libs/firebase";
 import { collection, addDoc } from "firebase/firestore";
 
+import { db } from "@/app/libs/firebase";
 import { useCardsStore } from "@/app/libs/useCardsStore";
 
 import Loader from "@/app/components/loader";

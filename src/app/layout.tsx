@@ -12,10 +12,10 @@ export default function RootLayout({ children }: { readonly children: React.Reac
       </head>
 
       <body className="flex flex-col h-[100dvh] w-screen overflow-hidden">
-        <div className="h-[6%] p-1">
+        <div className="h-[92%] overflow-hidden px-4">{children}</div>
+        <div className="h-[8%] p-1">
           <Navbar />
         </div>
-        <div className="h-[94%] overflow-hidden px-4">{children}</div>
       </body>
     </html>
   );
