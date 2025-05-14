@@ -7,7 +7,7 @@ import { Store } from "@/types/store";
 
 export const useCardsStore = create<Store>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       activeCardId: null,
       cards: [],
       removeCard: (id) =>
