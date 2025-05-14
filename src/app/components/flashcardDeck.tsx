@@ -68,6 +68,12 @@ export default function FlashcardDeck() {
     };
   }, [router, setInitialCards]);
 
+  useEffect(() => {
+    if (cards.length > 0) {
+      useCardsStore.getState().setActiveCardId(cards[index].id ?? "");
+    }
+  }, [cards, index]);
+
   const handleSwipe = (offsetY: number) => {
     if (Math.abs(offsetY) > 100) {
       setIndex((prev) => (prev + 1) % cards.length);

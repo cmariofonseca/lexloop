@@ -3,5 +3,6 @@
 @source "../../.flowbite-react/class-list.json";
 
 body {
+  background-color: #f1f5f9;
   font-family: Arial, Helvetica, sans-serif;
 }
