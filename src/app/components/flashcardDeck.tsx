@@ -54,7 +54,6 @@ export default function FlashcardDeck() {
 
     fetchCards();
 
-    // Refetch cards when user returns to this page
     const handleVisibility = () => {
       if (document.visibilityState === "visible") {
         fetchCards();
@@ -76,7 +75,11 @@ export default function FlashcardDeck() {
 
   const handleSwipe = (offsetY: number) => {
     if (Math.abs(offsetY) > 100) {
-      setIndex((prev) => (prev + 1) % cards.length);
+      if (offsetY < 0) {
+        setIndex((prev) => (prev + 1) % cards.length);
+      } else {
+        setIndex((prev) => (prev - 1 + cards.length) % cards.length);
+      }
     }
   };
 

@@ -19,7 +19,7 @@ export const useCardsStore = create<Store>()(
       setInitialCards: (initial) => {
         set({ cards: initial });
         if (initial.length > 0) {
-          set({ activeCardId: initial[0].id }); // establecer el primero como activo por defecto
+          set({ activeCardId: initial[0].id });
         }
       },
     }),
