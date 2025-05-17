@@ -8,7 +8,7 @@ import { db } from "@/app/libs/firebase";
 
 import Loader from "@/app/components/loader";
 
-export default function EditCardPage() {
+export default function EditFlashcard() {
   const router = useRouter();
   const { id } = useParams();
 
@@ -67,7 +67,6 @@ export default function EditCardPage() {
     }
   };
 
-  if (loading) return <p className="text-center mt-10">Loading card...</p>;
   if (loading) return <Loader />;
   if (error) return <p className="text-center mt-10 text-red-600">{error}</p>;
 

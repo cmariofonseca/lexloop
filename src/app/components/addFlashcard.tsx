@@ -10,7 +10,7 @@ import Loader from "@/app/components/loader";
 import { FirebaseUser } from "@/types/firebase";
 import { Card } from "@/types/ card";
 
-export default function AddCardForm() {
+export default function AddFlashcard() {
   const [english, setEnglish] = useState("");
   const [pronunciation, setPronunciation] = useState("");
   const [spanish, setSpanish] = useState("");
@@ -33,7 +33,6 @@ export default function AddCardForm() {
     const newCard: Card = {
       createdAt: new Date(),
       english: english.trim(),
-      id: "",
       pronunciation: pronunciation.trim(),
       spanish: spanish.trim(),
       userId,
