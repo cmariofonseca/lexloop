@@ -24,8 +24,8 @@ export default function Flashcard({ english, pronunciation, spanish, imageUrl }:
       )}
 
       <h2 className="text-4xl font-bold text-blue-700 text-center break-words">{english}</h2>
-      <p className="text-gray-400 mt-2 text-center break-words">({pronunciation})</p>
-      <p className="text-xl text-gray-600 mt-6 text-center break-words">{spanish}</p>
+      <p className="text-xl text-gray-400 mt-2 text-center break-words">({pronunciation})</p>
+      <p className="text-2xl text-gray-600 mt-6 text-center break-words">{spanish}</p>
     </motion.div>
   );
 }
