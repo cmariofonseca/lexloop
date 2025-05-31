@@ -108,6 +108,7 @@ export default function AddFlashcard() {
                 setShowError(false);
               }
             }}
+            required
             type="text"
             value={english}
           />

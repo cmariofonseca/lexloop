@@ -22,6 +22,8 @@ export default function EditFlashcard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showError, setShowError] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [shouldRemoveImage, setShouldRemoveImage] = useState(false);
 
   const storedUser =
     typeof window !== "undefined"
@@ -45,6 +47,7 @@ export default function EditFlashcard() {
         }
 
         const data = snapshot.data();
+        setImageUrl(data.imageUrl ?? null);
         setEnglish(data.english ?? "");
         setPronunciation(data.pronunciation ?? "");
         setSpanish(data.spanish ?? "");
@@ -71,8 +74,7 @@ export default function EditFlashcard() {
 
     setShowError(false);
 
-    let imageUrl = null;
-
+    let finalImageUrl = imageUrl;
     const sanitizedName = english
       .trim()
       .toLowerCase()
@@ -82,7 +84,9 @@ export default function EditFlashcard() {
     if (imageFile) {
       const imageRef = ref(storage, `flashcards/${userId}/${Date.now()}-${sanitizedName}`);
       await uploadBytes(imageRef, imageFile);
-      imageUrl = await getDownloadURL(imageRef);
+      finalImageUrl = await getDownloadURL(imageRef);
+    } else if (shouldRemoveImage) {
+      finalImageUrl = null;
     }
 
     try {
@@ -91,14 +95,27 @@ export default function EditFlashcard() {
         english: english.trim(),
         pronunciation: pronunciation.trim(),
         spanish: spanish.trim(),
-        ...(imageUrl && { imageUrl }),
+        ...(finalImageUrl !== null ? { imageUrl: finalImageUrl } : { imageUrl: null }),
       });
 
       router.push("/pages/cards");
     } catch (err) {
       console.error("Error updating card:", err);
       setError("Could not update card.");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleImageChange = (file: File) => {
+    setImageFile(file);
+    setShouldRemoveImage(false); // Si subimos nueva imagen, cancelamos la eliminación
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImageUrl(null);
+    setShouldRemoveImage(true);
   };
 
   if (loading) return <Loader />;
@@ -133,6 +150,7 @@ export default function EditFlashcard() {
                 setShowError(false);
               }
             }}
+            required
             type="text"
             value={english}
           />
@@ -149,7 +167,6 @@ export default function EditFlashcard() {
             id="pronunciation"
             maxLength={24}
             onChange={(e) => setPronunciation(e.target.value)}
-            required
             type="text"
             value={pronunciation}
           />
@@ -165,13 +182,16 @@ export default function EditFlashcard() {
             id="spanish"
             maxLength={48}
             onChange={(e) => setSpanish(e.target.value)}
-            required
             type="text"
             value={spanish}
           />
         </div>
 
-        <ImageUploadButton onFileSelect={(file) => setImageFile(file)} />
+        <ImageUploadButton
+          onFileSelect={handleImageChange}
+          initialImageUrl={imageUrl}
+          onRemoveImage={handleRemoveImage}
+        />
 
         {error && <p className="text-red-600 text-sm">{error}</p>}
 
