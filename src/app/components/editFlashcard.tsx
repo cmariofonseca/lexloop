@@ -150,7 +150,6 @@ export default function EditFlashcard() {
                 setShowError(false);
               }
             }}
-            required
             type="text"
             value={english}
           />
@@ -159,7 +158,7 @@ export default function EditFlashcard() {
 
         <div className="mb-4">
           <label className="block mb-2 text-sm font-medium text-gray-900" htmlFor="pronunciation">
-            How to pronounce
+            How to pronounce <small className="text-gray-400">(optional)</small>
           </label>
           <input
             autoComplete="off"
@@ -174,7 +173,7 @@ export default function EditFlashcard() {
 
         <div className="mb-4">
           <label className="block text-sm mb-1 font-medium text-gray-900" htmlFor="spanish">
-            Spanish translation
+            Translation or definition in English <small className="text-gray-400">(optional)</small>
           </label>
           <input
             autoComplete="off"
@@ -187,11 +186,16 @@ export default function EditFlashcard() {
           />
         </div>
 
-        <ImageUploadButton
-          onFileSelect={handleImageChange}
-          initialImageUrl={imageUrl}
-          onRemoveImage={handleRemoveImage}
-        />
+        <div className="mb-4">
+          <label className="block text-sm mb-1 font-medium text-gray-900" htmlFor="spanish">
+            Related image <small className="text-gray-400">(optional)</small>
+          </label>
+          <ImageUploadButton
+            onFileSelect={handleImageChange}
+            initialImageUrl={imageUrl}
+            onRemoveImage={handleRemoveImage}
+          />
+        </div>
 
         {error && <p className="text-red-600 text-sm">{error}</p>}
 
