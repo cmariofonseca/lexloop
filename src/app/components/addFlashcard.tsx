@@ -19,6 +19,7 @@ export default function AddFlashcard() {
   const [spanish, setSpanish] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const { cards, setInitialCards } = useCardsStore();
+  const [isDuplicate, setIsDuplicate] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showError, setShowError] = useState(false);
 
@@ -27,6 +28,13 @@ export default function AddFlashcard() {
       ? (JSON.parse(localStorage.getItem("lexloop_user") ?? "null") as FirebaseUser)
       : null;
   const userId = storedUser?.uid;
+
+  const checkDuplicateEnglishWord = (word: string) => {
+    const exists = cards.some(
+      (card) => card.english.toLowerCase().trim() === word.toLowerCase().trim()
+    );
+    setIsDuplicate(exists);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,7 +102,7 @@ export default function AddFlashcard() {
           <input
             autoComplete="off"
             className={`block w-full p-2.5 text-sm rounded-lg shadow-xs ${
-              showError
+              showError || isDuplicate
                 ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500"
                 : "bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
             }`}
@@ -103,21 +111,30 @@ export default function AddFlashcard() {
             onChange={(e) => {
               const value = e.target.value;
               setEnglish(value);
-
               if (value.trim().length > 0) {
                 setShowError(false);
+                setIsDuplicate(false); // Reiniciar estado de duplicado si el usuario empieza a escribir
               }
             }}
-            required
+            onBlur={() => {
+              if (english.trim().length > 0) {
+                checkDuplicateEnglishWord(english);
+              }
+            }}
             type="text"
             value={english}
           />
           {showError && <p className="mt-2 text-sm text-red-600">English word is required.</p>}
+          {isDuplicate && (
+            <p className="mt-2 text-sm text-red-600">
+              This English word already exists in your cards.
+            </p>
+          )}
         </div>
 
         <div className="mb-4">
           <label className="block mb-2 text-sm font-medium text-gray-900" htmlFor="pronunciation">
-            How to pronounce
+            How to pronounce <small className="text-gray-400">(optional)</small>
           </label>
           <input
             autoComplete="off"
@@ -132,7 +149,7 @@ export default function AddFlashcard() {
 
         <div className="mb-4">
           <label className="block mb-2 text-sm font-medium text-gray-900" htmlFor="spanish">
-            Spanish translation
+            Translation or definition in English <small className="text-gray-400">(optional)</small>
           </label>
           <input
             autoComplete="off"
@@ -145,7 +162,12 @@ export default function AddFlashcard() {
           />
         </div>
 
-        <ImageUploadButton onFileSelect={(file) => setImageFile(file)} />
+        <div className="mb-4">
+          <label className="block text-sm mb-1 font-medium text-gray-900" htmlFor="spanish">
+            Related image <small className="text-gray-400">(optional)</small>
+          </label>
+          <ImageUploadButton onFileSelect={(file) => setImageFile(file)} />
+        </div>
 
         <button
           className="w-full bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm px-5 py-2.5 mt-4"
