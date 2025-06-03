@@ -50,7 +50,7 @@ export default function Navbar() {
     <nav className="w-full h-full bg-white border border-gray-200 rounded-lg shadow-sm z-10 flex justify-around items-center">
       {/* Version */}
       <Link href="">
-        <small className="text-slate-400">v:1.15.0</small>
+        <small className="text-slate-400">v:1.16.0</small>
       </Link>
 
       {/* View Cards */}
