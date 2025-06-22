@@ -22,51 +22,59 @@ export default function FlashcardDeck() {
 
   const router = useRouter();
 
+  const fetchCards = async () => {
+    setLoading(true);
+
+    const storedUser =
+      typeof window !== "undefined"
+        ? (JSON.parse(localStorage.getItem("lexloop_user") ?? "null") as FirebaseUser)
+        : null;
+
+    if (!storedUser?.uid) {
+      router.push("/pages/auth");
+      return;
+    }
+
+    const q = query(collection(db, "cards"), where("userId", "==", storedUser.uid));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      router.push("/pages/add");
+      return;
+    }
+
+    const userCards = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Card[];
+
+    setInitialCards(userCards);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchCards = async () => {
+    const sessionFlag = sessionStorage.getItem("session_started");
+
+    if (!sessionFlag) {
+      fetchCards().then(() => {
+        sessionStorage.setItem("session_started", "true");
+      });
+    }
+
+    if (sessionFlag && cards.length === 0) {
       setLoading(true);
-
-      const storedUser =
-        typeof window !== "undefined"
-          ? (JSON.parse(localStorage.getItem("lexloop_user") ?? "null") as FirebaseUser)
-          : null;
-
-      if (!storedUser?.uid) {
-        router.push("/pages/auth");
-        return;
-      }
-
-      const q = query(collection(db, "cards"), where("userId", "==", storedUser.uid));
-      const snapshot = await getDocs(q);
-
-      if (snapshot.empty) {
-        router.push("/pages/add");
-        return;
-      }
-
-      const userCards = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Card[];
-
-      setInitialCards(userCards);
-      setLoading(false);
-    };
-
-    fetchCards();
+      setTimeout(() => setLoading(false), 300);
+    }
 
     const handleVisibility = () => {
-      if (document.visibilityState === "visible") {
+      if (document.visibilityState === "visible" && cards.length === 0) {
         fetchCards();
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibility);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
-  }, [router, setInitialCards]);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [router, setInitialCards, cards.length]);
 
   useEffect(() => {
     if (cards.length > 0) {
@@ -85,14 +93,12 @@ export default function FlashcardDeck() {
   };
 
   if (loading) return <Loader />;
-
   if (cards.length === 0) {
     return <p className="text-center mt-20 text-gray-600">Loading cards...</p>;
   }
 
   return (
-    <div className="w-full h-full flex justify-center items-center">
-      {/* Flashcard with animations and drag functionality */}
+    <div className="w-full h-full flex justify-center items-center relative">
       <AnimatePresence mode="wait">
         <motion.div
           animate={{ opacity: 1, y: 0 }}
@@ -110,7 +116,7 @@ export default function FlashcardDeck() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Botones solo visibles en pantallas medianas o grandes */}
+      {/* Botones visibles en pantallas medianas o grandes */}
       <div className="hidden md:flex absolute right-6 top-1/2 transform -translate-y-1/2 flex-col space-y-4 z-10">
         <button
           onClick={() => handleSwipe(-150)}

@@ -39,16 +39,15 @@ export default function AddFlashcard() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setShowError(false);
+
+    let imageUrl = null;
 
     if (!english.trim() || !userId) {
       setShowError(true);
       setLoading(false);
       return;
     }
-
-    setShowError(false);
-
-    let imageUrl = null;
 
     const sanitizedName = english
       .trim()
