@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function AddPage() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen">
+    <main className="w-full h-full flex justify-center items-center">
       <AddFlashcard />
     </main>
   );

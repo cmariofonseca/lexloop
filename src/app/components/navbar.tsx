@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
-import { Pencil, PlusSquare, SquareChartGantt, Trash2 } from "lucide-react";
 import { onAuthStateChanged } from "firebase/auth";
+import { Gamepad2, Pencil, PlusSquare, SquareChartGantt, Trash2 } from "lucide-react";
 
 import { auth } from "@/app/libs/firebase";
 import { useCardsStore } from "../libs/useCardsStore";
@@ -22,6 +21,12 @@ export default function Navbar() {
   const isAddPage = pathname === "/pages/add";
   const isAuthPage = pathname === "/pages/auth";
 
+  const noCards = cards.length === 0;
+  const isViewDisabled = isAuthPage || noCards || !userLoggedIn;
+  const isDeleteDisabled = isAuthPage || noCards || isEditPage || isAddPage || !userLoggedIn;
+  const isEditDisabled = isAuthPage || noCards || isDeletePage || isAddPage || !userLoggedIn;
+  const isAddDisabled = isAuthPage || !userLoggedIn;
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUserLoggedIn(!!user);
@@ -29,12 +34,6 @@ export default function Navbar() {
 
     return () => unsubscribe();
   }, []);
-
-  const noCards = cards.length === 0;
-  const isViewDisabled = isAuthPage || noCards || !userLoggedIn;
-  const isDeleteDisabled = isAuthPage || noCards || isEditPage || isAddPage || !userLoggedIn;
-  const isEditDisabled = isAuthPage || noCards || isDeletePage || isAddPage || !userLoggedIn;
-  const isAddDisabled = isAuthPage || !userLoggedIn;
 
   const handleEdit = () => {
     if (!activeCardId) return alert("No card selected");
@@ -49,9 +48,19 @@ export default function Navbar() {
   return (
     <nav className="w-full h-full bg-white border border-gray-200 rounded-lg shadow-sm z-10 flex justify-around items-center">
       {/* Version */}
-      <Link href="">
-        <small className="text-slate-400">v:1.16.0</small>
-      </Link>
+      <small className="block text-center text-slate-400">v220625</small>
+
+      {/* View memory game */}
+      {/* <button
+        disabled={isViewDisabled}
+        className={`${
+          pathname === "/pages/play" ? "text-blue-600" : "text-gray-600 hover:text-blue-500"
+        } ${isViewDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+        onClick={() => router.push("/pages/play")}
+        aria-label="View play"
+      >
+        <Gamepad2 size={24} />
+      </button> */}
 
       {/* View Cards */}
       <button

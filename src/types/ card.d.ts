@@ -3,6 +3,7 @@ export interface Card {
   english: string;
   id?: string;
   imageUrl?: string;
+  pairId?: string;
   pronunciation: string;
   spanish: string;
   userId: string;
