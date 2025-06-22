@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 type Props = {
@@ -16,10 +17,12 @@ export default function Flashcard({ english, pronunciation, spanish, imageUrl }:
       whileTap={{ scale: 0.98 }}
     >
       {imageUrl && (
-        <img
-          src={imageUrl}
+        <Image
           alt={english}
           className="mb-16 w-64 object-cover rounded-lg shadow-md"
+          height={256}
+          src={imageUrl}
+          width={256}
         />
       )}
 
