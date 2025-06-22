@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function EditPage() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen">
+    <main className="w-full h-full flex justify-center items-center">
       <EditFlashcard />
     </main>
   );

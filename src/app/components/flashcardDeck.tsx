@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 import { db } from "@/app/libs/firebase";
 import { useCardsStore } from "@/app/libs/useCardsStore";
@@ -90,7 +91,8 @@ export default function FlashcardDeck() {
   }
 
   return (
-    <div className="w-full h-full overflow-hidden flex justify-center items-center">
+    <div className="w-full h-full flex justify-center items-center">
+      {/* Flashcard with animations and drag functionality */}
       <AnimatePresence mode="wait">
         <motion.div
           animate={{ opacity: 1, y: 0 }}
@@ -107,6 +109,24 @@ export default function FlashcardDeck() {
           <Flashcard {...cards[index]} />
         </motion.div>
       </AnimatePresence>
+
+      {/* Botones solo visibles en pantallas medianas o grandes */}
+      <div className="hidden md:flex absolute right-6 top-1/2 transform -translate-y-1/2 flex-col space-y-4 z-10">
+        <button
+          onClick={() => handleSwipe(-150)}
+          className="rounded-full shadow border-2 border-blue-700 hover:bg-white transition p-3"
+          aria-label="Previous card"
+        >
+          <ChevronUp size={24} />
+        </button>
+        <button
+          onClick={() => handleSwipe(150)}
+          className="rounded-full shadow border-2 border-blue-700 hover:bg-white transition p-3"
+          aria-label="Next card"
+        >
+          <ChevronDown size={24} color="#1a56db" />
+        </button>
+      </div>
     </div>
   );
 }
