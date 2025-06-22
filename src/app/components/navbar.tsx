@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import { Gamepad2, Pencil, PlusSquare, SquareChartGantt, Trash2 } from "lucide-react";
+import { Pencil, PlusSquare, SquareChartGantt, Trash2 } from "lucide-react";
 
 import { auth } from "@/app/libs/firebase";
 import { useCardsStore } from "../libs/useCardsStore";
