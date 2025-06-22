@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 type ImageUploadButtonProps = Readonly<{
   onFileSelect: (file: File) => void;
@@ -53,8 +54,14 @@ export default function ImageUploadButton({
       {previewUrl ? (
         <div className="relative w-full">
           {/* Miniatura */}
-          <div className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 rounded-lg overflow-hidden py-1">
-            <img alt="Preview" className="object-contain h-full w-full" src={previewUrl} />
+          <div className="w-full h-32 flex justify-center items-center  border-2 border-gray-300 rounded-lg overflow-hidden py-1">
+            <Image
+              alt="Preview"
+              className="object-contain h-full w-full"
+              height={200}
+              src={previewUrl}
+              width={200}
+            />
           </div>
 
           {/* Botón para cambiar imagen */}
